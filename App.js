@@ -1,13 +1,41 @@
+import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, Button } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-export default function App() {
+import React, { useState } from 'react';
+
+const Stack = createStackNavigator();
+
+import recordScreen from './sites/record'
+import playScreen from './sites/playback'
+
+const App = () => {
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+    <NavigationContainer>
       <StatusBar style="auto" />
-    </View>
+      <Stack.Navigator screenOptions={{
+    headerShown: true
+  }}>
+        <Stack.Screen style="styles.screen"
+          name="Record"
+          component={recordScreen}
+          options={{ title: 'Recording studio' }} 
+          />
+        <Stack.Screen style="styles.screen"
+          name="Playback"
+          component={playScreen}
+          options={{ title: 'Work it play it harder faster' }}
+        />
+      </Stack.Navigator>
+
+      <View style={styles.container}>
+        <SafeAreaView>
+        </SafeAreaView>
+      </View>
+    </NavigationContainer>
   );
 }
 
@@ -18,4 +46,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  container: {
+    flex: 1,
+  },
+  item: {
+    backgroundColor: '#f9c2ff',
+    padding: 20,
+    marginVertical: 8,
+  },
+  screen: {
+    textAlign: 'center'
+  },
+
 });
+export default App
