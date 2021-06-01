@@ -5,8 +5,8 @@ import { Audio } from 'expo-av'
 
 
 const Record = ({ navigation }) => {
-  const [recording, setRecording] = React.useState(false)
 
+const [recording, setRecording] = useState(null);
 
   async function startRecording() {
     try {
@@ -32,6 +32,7 @@ const Record = ({ navigation }) => {
     await recording.stopAndUnloadAsync();
     const uri = recording.getURI(); // placera i nån fil - exportera för att plocka upp i playback
         console.log('Recording stopped and stored at', uri);
+        Audio.setIsEnabledAsync(true)
   }
   
   return (

@@ -1,44 +1,103 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Button } from 'react-native';
+import {Component} from 'react';
+import { Text, View, StyleSheet, Button, TouchableNativeFeedback } from 'react-native';
 import { Audio } from 'expo-av';
 
-const Playback = () => {
-  const [sound, setSound] = React.useState();
+class Playback extends Component {
 
-  async function playSound() {
-    console.log('Loading Sound');
-    const { sound } = await Audio.Sound.createAsync(
-    //    require('./assets/Hello.mp3') // hämta URI från records sida
+  constructor(props) {
+    super(props);
+    this.state = { isPlaying: false };
+
+    this.loadAudio = this.loadAudio.bind(this);
+    this.toggleAudioPlayback = this.toggleAudioPlayback.bind(this);
+  }
+
+  componentDidMount() {
+    this.loadAudio();
+  }
+
+  componentWillUnmount() {
+    this.soundObject.stopAsync();
+  }
+
+  async loadAudio() {
+    this.soundObject = new Audio.Sound();
+    try {
+      await this.soundObject.loadAsync({ uri: this.props.source /* url for your audio file */ });
+    } catch (e) {
+      console.log('ERROR Loading Audio', e);
+    }
+  }
+
+  toggleAudioPlayback() {
+    this.setState({
+      isPlaying: !this.state.isPlaying,
+    }, () => (this.state.isPlaying
+      ? this.soundObject.playAsync()
+      : this.soundObject.stopAsync()));
+  }
+
+  render() {
+    return (
+      <TouchableNativeFeedback onPress={this.toggleAudioPlayback}>
+        <View style={this.props.style}>
+          {this.props.children}
+        </View>
+      </TouchableNativeFeedback>
     );
-    setSound(sound);
-
-    console.log('Playing Sound');
-    await sound.playAsync(); }
-
-  React.useEffect(() => {
-    return sound
-      ? () => {
-          console.log('Unloading Sound');
-          sound.unloadAsync(); }
-      : undefined;
-  }, [sound]);
-
-  return (
-    <View style={styles.container}>
-        <Text>
-                'i have got someting to say'
-            </Text>
-      <Button title="Play Sound" onPress={playSound} />
-    </View>
-  );
+  }
 }
-
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-  });
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
+// constructor(props) {
+//   super(props);
+//   this.state = { isPlaying: false };
+
+//   this.loadAudio = this.loadAudio.bind(this);
+//   this.toggleAudioPlayback = this.toggleAudioPlayback.bind(this);
+// }
+
+// componentDidMount() {
+//   this.loadAudio();
+// }
+
+// componentWillUnmount() {
+//   this.soundObject.stopAsync();
+// }
+
+// async loadAudio() {
+//   this.soundObject = new Audio.Sound();
+//   try {
+//     await this.soundObject.loadAsync({ uri: this.props.source /* url for your audio file */ });
+//   } catch (e) {
+//     console.log('ERROR Loading Audio', e);
+//   }
+// }
+
+// toggleAudioPlayback() {
+//   this.setState({
+//     isPlaying: !this.state.isPlaying,
+//   }, () => (this.state.isPlaying
+//     ? this.soundObject.playAsync()
+//     : this.soundObject.stopAsync()));
+// }
+
+// render() {
+//   return (
+//     <TouchableNativeFeedback onPress={this.toggleAudioPlayback}>
+//       <View style={this.props.style}>
+//         {this.props.children}
+//       </View>
+//     </TouchableNativeFeedback>
+//   );
+// }
+// }
 export default Playback;
