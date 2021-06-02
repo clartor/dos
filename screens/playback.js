@@ -1,25 +1,28 @@
 import * as React from 'react';
 import { Text, View, StyleSheet, Button } from 'react-native';
 import { Audio } from 'expo-av';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function Playback() {
   const [sound, setSound] = React.useState();
   
   
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('headKey')
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch(e) {
+    }
+    console.log()
+  }
   async function playSound() {
     console.log('Loading Sound');
-    // const { sound } = await Audio.Sound.createAsync(
-      //    require('./assets/Hello.mp3')
-      // );
-      // setSound(sound);
-      const getData = async () => {
-        try {
-          const jsonValue = await AsyncStorage.getItem('headKey')
-          return jsonValue != null ? JSON.parse(jsonValue) : null;
-        } catch(e) {
-        }
-      }
+                                              // här tar det stopp i terminalen 
+      const { sound } = await Audio.Sound.createAsync(
+      getData()
+         //require('./assets/Hello.mp3')
+      );
+      setSound(sound);
 
     console.log('Playing Sound');
     await sound.playAsync(); }

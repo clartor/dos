@@ -8,8 +8,8 @@ import React from 'react';
 
 const Stack = createStackNavigator();
 
-import recordScreen from './sites/record'
-import playScreen from './sites/playback'
+import recordScreen from './screens/record'
+import playScreen from './screens/playback'
 
 const App = () => {
 

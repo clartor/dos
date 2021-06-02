@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView, StyleSheet, Text, View, Button } from 'react-native';
 import { Audio } from 'expo-av'
 
@@ -11,7 +11,7 @@ const storeData = async (value) => {
   const stringed = JSON.stringify(value);
   try {
     await AsyncStorage.setItem(
-      'headKey',
+      "headKey",
       stringed);
   } catch (error) {
     console.error('!' + error)
