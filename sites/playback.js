@@ -1,16 +1,25 @@
 import * as React from 'react';
 import { Text, View, StyleSheet, Button } from 'react-native';
 import { Audio } from 'expo-av';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Playback = () => {
+export function Playback() {
   const [sound, setSound] = React.useState();
-
+  
+  
   async function playSound() {
     console.log('Loading Sound');
-    const { sound } = await Audio.Sound.createAsync(
-    //    require('./assets/Hello.mp3') // hämta URI från records sida
-    );
-    setSound(sound);
+    // const { sound } = await Audio.Sound.createAsync(
+      //    require('./assets/Hello.mp3')
+      // );
+      // setSound(sound);
+      const getData = async () => {
+        try {
+          const jsonValue = await AsyncStorage.getItem('headKey')
+          return jsonValue != null ? JSON.parse(jsonValue) : null;
+        } catch(e) {
+        }
+      }
 
     console.log('Playing Sound');
     await sound.playAsync(); }
@@ -25,20 +34,17 @@ const Playback = () => {
 
   return (
     <View style={styles.container}>
-        <Text>
-                'i have got someting to say'
-            </Text>
       <Button title="Play Sound" onPress={playSound} />
     </View>
   );
 }
+export default Playback;
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-  });
-export default Playback;
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
