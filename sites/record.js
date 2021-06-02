@@ -1,12 +1,23 @@
-
 import React, { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView, StyleSheet, Text, View, Button } from 'react-native';
 import { Audio } from 'expo-av'
 
-
 const Record = ({ navigation }) => {
 
-const [recording, setRecording] = useState(null);
+const [recording, setRecording] = useState();
+
+const storeData = async (value) => {
+  const stringed = JSON.stringify(value);
+  try {
+    await AsyncStorage.setItem(
+      'headKey',
+      stringed);
+  } catch (error) {
+    console.error('!' + error)
+  }
+  console.log('done')
+};
 
   async function startRecording() {
     try {
@@ -16,7 +27,7 @@ const [recording, setRecording] = useState(null);
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
       });
-      console.log('start recording..');
+          console.log('start recording..');
       const recording = new Audio.Recording();
       await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
       await recording.startAsync();
@@ -26,13 +37,20 @@ const [recording, setRecording] = useState(null);
       console.error('failed ro start recordning', err);
     }
   }
+  
   async function stopRecording() {
-        console.log('Stopping recording..');
-    setRecording(undefined);
-    await recording.stopAndUnloadAsync();
-    const uri = recording.getURI(); // placera i nån fil - exportera för att plocka upp i playback
-        console.log('Recording stopped and stored at', uri);
-        Audio.setIsEnabledAsync(true)
+    try {
+      console.log('Stopping recording..');
+        await recording.stopAndUnloadAsync();
+        storeData(recording)
+            const uri = recording.getURI();
+            console.log('Recording stopped and stored at', uri);
+        setRecording(undefined); 
+    } catch (error) {
+      console.error('?' + error)
+      
+    }
+        
   }
   
   return (
@@ -47,12 +65,12 @@ const [recording, setRecording] = useState(null);
         <Button
           title={recording ? 'Stop Recording' : 'Start Recording'}
           onPress={recording ? stopRecording : startRecording}
-        />
-        <Text>{ 'uri' }</Text>
+          />
       </View>
     </SafeAreaView>
   );
 }
+export default Record
 
 const styles = StyleSheet.create({
   container: {
@@ -62,4 +80,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-export default Record
