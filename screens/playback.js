@@ -4,30 +4,32 @@ import { Audio } from 'expo-av';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function Playback() {
-  const [sound, setSound] = React.useState();
-  
-  
+  const [sound, setSound] = React.useState(new Audio.Sound());
+  sound.setOnPlaybackStatusUpdate();
+
   const getData = async () => {
+    let jsonValue = null;
     try {
-      const jsonValue = await AsyncStorage.getItem('headKey')
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
+      await AsyncStorage.getItem('headKey', (error, result) => {jsonValue=result}) // reslutat finns bara i callback 
+      return jsonValue;
+    
     } catch(e) {
+      console.error(e);
     }
-    console.log()
   }
-  async function playSound() {
-    console.log('Loading Sound');
-                                              // här tar det stopp i terminalen 
-      const { sound } = await Audio.Sound.createAsync(
-      getData()
-         //require('./assets/Hello.mp3')
+  async function playSound() {  
+    const ljud = await getData()
+    const { mySound } = await Audio.Sound.createAsync(
+      { uri: ljud },
+      { shouldPlay: true }
       );
-      setSound(sound);
+      console.log('done playin' + ljud)
+      setSound(mySound);
+      
+    await mySound.playAsync(); 
+  }
 
-    console.log('Playing Sound');
-    await sound.playAsync(); }
-
-  React.useEffect(() => {
+React.useEffect(() => {
     return sound
       ? () => {
           console.log('Unloading Sound');

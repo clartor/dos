@@ -13,10 +13,10 @@ const storeData = async (value) => {
     await AsyncStorage.setItem(
       "headKey",
       stringed);
+      console.log('done' + stringed)
   } catch (error) {
     console.error('!' + error)
   }
-  console.log('done')
 };
 
   async function startRecording() {
@@ -42,9 +42,9 @@ const storeData = async (value) => {
     try {
       console.log('Stopping recording..');
         await recording.stopAndUnloadAsync();
-        storeData(recording)
-            const uri = recording.getURI();
-            console.log('Recording stopped and stored at', uri);
+        const uri = recording.getURI();
+        console.log('Recording stopped and stored at', uri);
+        storeData(uri)
         setRecording(undefined); 
     } catch (error) {
       console.error('?' + error)
