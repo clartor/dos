@@ -30,7 +30,7 @@ const Record = ({ navigation }) => {
       setRecording(recording);
       setRecordings(prevState => [...prevState, {title: title, date: date, uri:recording.getURI()}] );
     } catch (err) {
-      alert('failed ro start recordning', err);
+      ;
     }
   }
   
