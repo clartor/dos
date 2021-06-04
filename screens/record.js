@@ -12,8 +12,8 @@ const Record = ({ navigation }) => {
       await AsyncStorage.setItem(
         "headKey",
         stringed);
-    } catch (error) {
-      console.error('error storing sound: ' + error)
+    } catch (e) {
+      console.error('error storing sound: ' + e)
     }
   };
   
@@ -29,8 +29,7 @@ const Record = ({ navigation }) => {
       await recording.startAsync();
       setRecording(recording);
       setRecordings(prevState => [...prevState, {title: title, date: date, uri:recording.getURI()}] );
-    } catch (err) {
-      ;
+    } catch (e) {
     }
   }
   
