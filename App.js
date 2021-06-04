@@ -27,7 +27,7 @@ const App = () => {
         <Stack.Screen style="styles.screen"
           name="Playback"
           component={playScreen}
-          options={{ title: 'Work it play it harder faster' }}
+          options={{ title: 'Gallery' }}
         />
       </Stack.Navigator>
 

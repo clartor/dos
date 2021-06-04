@@ -4,55 +4,46 @@ import { SafeAreaView, StyleSheet, Text, View, Button } from 'react-native';
 import { Audio } from 'expo-av'
 
 const Record = ({ navigation }) => {
-
-const [recording, setRecording] = useState();
-
-const storeData = async (value) => {
-  const stringed = JSON.stringify(value);
-  try {
-    await AsyncStorage.setItem(
-      "headKey",
-      stringed);
-      console.log('done' + stringed)
-  } catch (error) {
-    console.error('!' + error)
-  }
-};
-
+  const [recording, setRecording] = useState();
+  
+  const storeData = async (value) => {
+    const stringed = JSON.stringify(value);
+    try {
+      await AsyncStorage.setItem(
+        "headKey",
+        stringed);
+    } catch (error) {
+      console.error('error storing sound: ' + error)
+    }
+  };
+  
   async function startRecording() {
     try {
-      console.log('requesting permissions..');
       await Audio.requestPermissionsAsync();
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
       });
-          console.log('start recording..');
       const recording = new Audio.Recording();
       await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
       await recording.startAsync();
       setRecording(recording);
-      console.log('recordning started');
+      setRecordings(prevState => [...prevState, {title: title, date: date, uri:recording.getURI()}] );
     } catch (err) {
-      console.error('failed ro start recordning', err);
+      alert('failed ro start recordning', err);
     }
   }
   
   async function stopRecording() {
     try {
-      console.log('Stopping recording..');
-        await recording.stopAndUnloadAsync();
-        const uri = recording.getURI();
-        console.log('Recording stopped and stored at', uri);
-        storeData(uri)
-        setRecording(undefined); 
-    } catch (error) {
-      console.error('?' + error)
-      
-    }
-        
+      await recording.stopAndUnloadAsync();
+      const uri = recording.getURI();
+      setRecording(undefined);
+      storeData(uri)
+    } catch (e) { 
+    }   
   }
-  
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View>
@@ -62,10 +53,11 @@ const storeData = async (value) => {
           } />
       </View>
       <View style={styles.container}>
+        
         <Button
           title={recording ? 'Stop Recording' : 'Start Recording'}
           onPress={recording ? stopRecording : startRecording}
-          />
+        />
       </View>
     </SafeAreaView>
   );
